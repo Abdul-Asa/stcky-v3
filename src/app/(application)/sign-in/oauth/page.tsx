@@ -43,7 +43,7 @@ export default function OAuth() {
         setMessage("You're ready to go!");
       })
       .catch((e) => console.log(e));
-  }, []);
+  }, [router, searchParams]);
 
   return (
     <div className="flex items-center justify-center min-h-screen ">

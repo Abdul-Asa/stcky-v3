@@ -5,8 +5,7 @@ import showToast from "@/lib/show-toast";
 import { useRouter } from "next/navigation";
 import { magic, handleError } from "@/lib/magic";
 import { deleteCookie } from "@/lib/server-actions";
-import { Suspense, useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { useEffect, useState } from "react";
 
 export default function SpaceComp() {
   const router = useRouter();
@@ -34,7 +33,7 @@ export default function SpaceComp() {
       }
       setLoading(false);
     });
-  }, []);
+  }, [router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen ">
