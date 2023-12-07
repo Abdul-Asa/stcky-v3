@@ -29,7 +29,9 @@ export default function OAuth() {
     magic.oauth
       .getRedirectResult()
       .then((data) => {
+        console.log(data);
         setSessionToken(data.magic.idToken).then((res) => {
+          console.log(res);
           showToast({
             message: res.error ? res.error : "Logged in successfully",
             type: res.error ? "error" : "success",
