@@ -46,7 +46,10 @@ export default function OAuth() {
     };
 
     fetchRedirectResult();
-  }, [router, searchParams]);
+    return () => {
+      console.log("here 5");
+    };
+  }, []);
   return (
     <div className="flex items-center justify-center min-h-screen ">
       <div className="max-w-sm p-6 space-y-6 border rounded-lg shadow-lg dark:border-gray-700">
