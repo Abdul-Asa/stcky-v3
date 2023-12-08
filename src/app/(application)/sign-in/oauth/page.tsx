@@ -28,19 +28,12 @@ export default function OAuth() {
     }
     magic.oauth
       .getRedirectResult()
-      .then((data) => {
-        console.log(data);
-        setSessionToken(data.magic.idToken).then((res) => {
-          console.log(res);
-          showToast({
-            message: res.error ? res.error : "Logged in successfully",
-            type: res.error ? "error" : "success",
-          });
-          if (!res.error) {
-            router.push("/space");
-          }
-        });
-        setMessage("You're ready to go!");
+      .then(async (res) => {
+        const token = await setSessionToken(res.magic.idToken);
+        if (token.error) {
+          showToast({ message: token.error, type: "error" });
+          setMessage("Youre ready to go!");
+        } else router.push("/space");
       })
       .catch((e) => console.log(e));
   }, [router, searchParams]);
