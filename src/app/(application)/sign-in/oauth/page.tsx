@@ -27,16 +27,21 @@ export default function OAuth() {
       setMessage("No Credentials found");
       return;
     }
+    console.log("here 1");
+
     magic.oauth
       .getRedirectResult()
       .then(async (res) => {
+        console.log("here 2" + res);
         const token = await setSessionToken(res.magic.idToken);
+        console.log("here 3" + token);
         if (token.error) {
           showToast({ message: token.error, type: "error" });
           setMessage("Youre ready to go!");
         } else router.push("/space");
       })
       .catch((e) => console.log(e));
+    console.log("here 4");
   }, [router, searchParams]);
 
   return (
