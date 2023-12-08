@@ -18,6 +18,7 @@ export default function OAuth() {
   }, 10000);
 
   useEffect(() => {
+    console.log("Run on mount");
     if (!magic) return console.log("Magic not initialized");
     if (
       !searchParams.get("magic_credential") &&
