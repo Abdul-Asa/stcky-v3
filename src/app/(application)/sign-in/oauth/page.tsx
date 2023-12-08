@@ -29,13 +29,14 @@ export default function OAuth() {
       console.log("here 1");
 
       try {
+        console.log("here 1.5");
         const res = await magic.oauth.getRedirectResult();
         console.log("here 2" + JSON.stringify(res));
         const token = await setSessionToken(res.magic.idToken);
         console.log("here 3" + JSON.stringify(token));
         if (token.error) {
           showToast({ message: token.error, type: "error" });
-          setMessage("You're ready to go!");
+          setMessage("Rrror!");
         } else router.push("/space");
       } catch (e) {
         console.log("here 3.5" + e);
