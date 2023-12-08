@@ -40,7 +40,10 @@ export default function OAuth() {
           setMessage("Youre ready to go!");
         } else router.push("/space");
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log("here 3.5" + e);
+        console.log(e);
+      });
     console.log("here 4");
   }, [router, searchParams]);
 
