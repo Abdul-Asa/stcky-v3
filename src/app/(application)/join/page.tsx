@@ -1,4 +1,4 @@
-import Connect from "@/components/collab";
+import { UserList } from "@/components/collab";
 import { Room } from "@/components/wrappers/liveblocks-room";
 import { liveblockRoomExist } from "@/lib/server-actions";
 
@@ -17,11 +17,16 @@ export default async function JoinPage({
     } else {
       return (
         <Room roomId={roomId}>
-          <Connect />
+          <UserList />
         </Room>
       );
     }
   }
 
-  return <div>Join{alert ? "no rooms with Id exist" : "bro"}</div>;
+  return (
+    <div className="flex items-center justify-center h-screen">
+      Join
+      <p>{alert && "no rooms with Id exist"}</p>
+    </div>
+  );
 }

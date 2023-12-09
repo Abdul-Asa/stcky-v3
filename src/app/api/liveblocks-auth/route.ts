@@ -13,6 +13,8 @@ export async function POST(request: Request) {
     .find((c) => c.trim().startsWith("token="))
     ?.split("=")[1];
 
+  // Check if person can create room
+
   const checkToken = await checkSessionToken(token ?? "");
   const isValid = !("error" in checkToken);
   const isHost = isValid && room === token;

@@ -55,7 +55,6 @@ export default function OAuth() {
     <div className="max-w-sm p-6 space-y-6 border rounded-lg shadow-lg dark:border-gray-700">
       <h1 className="text-3xl font-bold text-center">OAuth</h1>
       <p className="text-center ">{message}</p>
-      <Loader />
     </div>
   );
 }

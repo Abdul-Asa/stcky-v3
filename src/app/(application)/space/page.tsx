@@ -1,4 +1,5 @@
-import Connect from "@/components/collab";
+import { UserList } from "@/components/collab";
+import Boundary from "@/components/layout/cursor-boundary";
 import SpaceComp from "@/components/space-com";
 import { Room } from "@/components/wrappers/liveblocks-room";
 import { checkSessionToken } from "@/lib/server-actions";
@@ -17,9 +18,11 @@ export default async function Space({
     } else {
       return (
         <Room roomId={roomId}>
-          <SpaceComp>
-            <Connect />
-          </SpaceComp>
+          <Boundary>
+            <SpaceComp>
+              <UserList />
+            </SpaceComp>
+          </Boundary>
         </Room>
       );
     }

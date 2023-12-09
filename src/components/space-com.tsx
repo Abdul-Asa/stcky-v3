@@ -60,81 +60,74 @@ export default function SpaceComp({
   }, [alertMessage, router, updateOnSignIn]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen ">
+    <>
       {loading ? (
         <Loader />
       ) : (
-        <div className="max-w-sm p-6 space-y-6 border rounded-lg shadow-lg dark:border-gray-700">
-          <h1 className="text-3xl font-bold text-center">Space:{render}</h1>
-          {children}
-          <Button
-            className="w-full "
-            variant="outline"
-            onClick={() => {
-              console.log(user);
-              showToast({
-                message: user.email + user.provider,
-                type: "success",
-              });
-            }}
-          >
-            <UserIcon className="w-5 h-5 mr-2" />
-            Check user Info
-          </Button>
-          <Button
-            className="w-full "
-            variant="outline"
-            onClick={() =>
-              checkSessionToken(user.token).then((res) => {
-                console.log(res);
-              })
-            }
-          >
-            <UserIcon className="w-5 h-5 mr-2" />
-            Check token matches
-          </Button>
-          <Button
-            className="w-full "
-            variant="outline"
-            onClick={() => {
-              router.replace("/space?roomId=" + user.token);
-            }}
-          >
-            <PlayIcon className="w-5 h-5 mr-2" />
-            Start shared session
-          </Button>
-          <Button
-            className="w-full "
-            variant="outline"
-            onClick={() => {
-              router.replace("/space");
-            }}
-          >
-            <PauseIcon className="w-5 h-5 mr-2" />
-            End shared session
-          </Button>
-          <Button
-            className="w-full "
-            variant="outline"
-            onClick={() => {
-              console.log("logOut");
-              if (!magic) return console.log("Magic not initialized");
-              magic.user.logout();
-              updateOnSignIn({
-                email: "",
-                issuer: "",
-                provider: "none",
-                token: "",
-              });
-              removeSessionToken();
-              router.push("/");
-            }}
-          >
-            <LogOutIcon className="w-5 h-5 mr-2" />
-            Logout
-          </Button>
+        <div className="flex flex-col items-center justify-center w-full h-screen ">
+          <div className="p-4 border border-gray-700 rounded shadow-lg">
+            {children}
+          </div>
+          <div className="max-w-sm p-6 space-y-6 border border-gray-700 rounded-lg shadow-lg">
+            <h1 className="text-3xl font-bold text-center">Space:{render}</h1>
+            <Button
+              className="w-full "
+              variant="outline"
+              onClick={() => {
+                console.log(user);
+                showToast({
+                  message: user.email + " - " + user.provider,
+                  type: "success",
+                });
+              }}
+            >
+              <UserIcon className="w-5 h-5 mr-2" />
+              Check user Info
+            </Button>
+
+            <Button
+              className="w-full "
+              variant="outline"
+              onClick={() => {
+                router.replace("/space?roomId=" + user.token);
+              }}
+            >
+              <PlayIcon className="w-5 h-5 mr-2" />
+              Start shared session
+            </Button>
+            <Button
+              className="w-full "
+              variant="outline"
+              onClick={() => {
+                router.replace("/space");
+              }}
+            >
+              <PauseIcon className="w-5 h-5 mr-2" />
+              End shared session
+            </Button>
+            <Button
+              className="w-full "
+              variant="outline"
+              onClick={() => {
+                console.log("logOut");
+                if (!magic) return console.log("Magic not initialized");
+                magic.user.logout();
+                updateOnSignIn({
+                  email: "",
+                  issuer: "",
+                  provider: "none",
+                  token: "",
+                });
+                removeSessionToken();
+                router.push("/");
+              }}
+            >
+              <LogOutIcon className="w-5 h-5 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

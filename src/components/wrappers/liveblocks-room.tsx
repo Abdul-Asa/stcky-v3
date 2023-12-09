@@ -13,7 +13,7 @@ export function Room({
   roomId: string;
 }) {
   return (
-    <RoomProvider id={roomId} initialPresence={{ userName: roomId }}>
+    <RoomProvider id={roomId} initialPresence={{ cursor: null }}>
       <ClientSideSuspense fallback={<Loader />}>
         {() => children}
       </ClientSideSuspense>
