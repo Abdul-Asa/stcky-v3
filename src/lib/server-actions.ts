@@ -1,7 +1,6 @@
 "use server";
 import { Magic } from "@magic-sdk/admin";
 import { Buffer } from "buffer";
-
 import { cookies } from "next/headers";
 import { UserInfo } from "./types";
 let mAdmin = new Magic(process.env.MAGIC_SECRET_KEY);
@@ -51,4 +50,15 @@ export const checkSessionToken = async (encodedId: string) => {
   } catch (error) {
     return { error: "Something went wrong" };
   }
+};
+
+export const liveblockRoomExist = async (roomId: string) => {
+  const response = await fetch(`https://api.liveblocks.io/v2/rooms/${roomId}`, {
+    headers: {
+      Authorization: `Bearer ${process.env.LIVEBLOCKS_SECRET_KEY}`,
+    },
+  });
+
+  const result = await response.json();
+  return result;
 };

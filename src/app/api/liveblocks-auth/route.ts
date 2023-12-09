@@ -18,7 +18,6 @@ export async function POST(request: Request) {
   const isHost = isValid && room === token;
   // Start an auth session inside your endpoint
   const userId = isValid ? checkToken.issuer : `guest:${crypto.randomUUID()}`;
-  console.log(userId);
   const session = liveblocks.prepareSession(
     userId,
     { userInfo: { isHost: isHost } } // Optional
