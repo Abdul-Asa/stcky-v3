@@ -1,4 +1,5 @@
 import { UserList } from "@/components/collab";
+import Boundary from "@/components/layout/cursor-boundary";
 import { Room } from "@/components/wrappers/liveblocks-room";
 import { liveblockRoomExist } from "@/lib/server-actions";
 
@@ -11,13 +12,14 @@ export default async function JoinPage({
   let alert = false;
   if (roomId) {
     const res = await liveblockRoomExist(roomId);
-    console.log(res);
     if ("error" in res) {
       alert = true;
     } else {
       return (
         <Room roomId={roomId}>
-          <UserList />
+          <Boundary>
+            <UserList />
+          </Boundary>
         </Room>
       );
     }

@@ -39,7 +39,7 @@ export function UserList() {
               setIsExpanded(false);
             }}
           >
-            {info.isHost ? "Host" : "Guest"}
+            {id} -{info.isHost ? "Host" : "Guest"}
           </p>
         </div>
         <div className="flex items-center w-[150px]  justify-end gap-3">
@@ -58,7 +58,7 @@ export function UserList() {
                   setIsExpanded(true);
                 }}
               >
-                {onlineUsers.length} others online
+                {onlineUsers.length} others
               </p>
               <Maximize2Icon
                 className="transition-all cursor-pointer text-scale-900 hover:text-scale-1200 hover:scale-105"
@@ -83,12 +83,11 @@ export function UserList() {
           </>
         )}
         {onlineUsers.map((onlineUser) => {
-          const id = onlineUser[0];
-          const isHost = onlineUser[1][0];
-          console.log(onlineUser);
+          const id = onlineUser[1][0];
+          const isHost = onlineUser[1][1];
           return (
             <div
-              key={id}
+              key={onlineUser[0]}
               className="flex items-center justify-center gap-2 space-x-2"
             >
               <div
@@ -97,7 +96,7 @@ export function UserList() {
                 }}
                 className="h-6 border-border rounded-full border-[1px] w-6"
               />
-              {isHost ? "Host" : "Guest"}
+              {id} -{isHost ? "Host" : "Guest"}
             </div>
           );
         })}
