@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { GithubIcon, ChromeIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Form,
   FormField,
@@ -15,17 +15,19 @@ import {
   FormControl,
   FormDescription,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
+} from "../ui/form";
+import { Input } from "../ui/input";
 import { setSessionToken } from "@/lib/server-actions";
 import { OAuthProvider } from "@magic-ext/oauth";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAtom } from "jotai";
+import { updateOnSignInAtom } from "../wrappers/jotai-provider";
 
 export default function RegisterForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-
+  const [, updateOnSignIn] = useAtom(updateOnSignInAtom);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,11 +42,10 @@ export default function RegisterForm() {
       .loginWithEmailOTP(values)
       .then((data) => {
         setSessionToken(data || "").then((res) => {
-          showToast({
-            message: res.error ? res.error : "Logged in successfully",
-            type: res.error ? "error" : "success",
-          });
-          if (!res.error) {
+          if ("error" in res)
+            return showToast({ message: res.error, type: "error" });
+          else {
+            updateOnSignIn(res);
             router.push("/space");
           }
         });
@@ -67,6 +68,16 @@ export default function RegisterForm() {
     magic.user.logout();
     setLoading(false);
   }, []);
+
+  const test = () => {
+    if (!magic) return console.log("Magic not initialized");
+    magic.user
+      .getIdToken()
+      .then((token) => {
+        console.log(token);
+      })
+      .catch(handleError);
+  };
 
   return (
     <>
@@ -119,6 +130,15 @@ export default function RegisterForm() {
       >
         <GithubIcon className="w-5 h-5 mr-2" />
         Login with Github
+      </Button>
+      <Button
+        className="w-full "
+        variant="outline"
+        disabled={loading}
+        onClick={test}
+      >
+        <GithubIcon className="w-5 h-5 mr-2" />
+        Test
       </Button>
     </>
   );

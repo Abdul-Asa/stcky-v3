@@ -1,7 +1,9 @@
 "use server";
 import { Magic } from "@magic-sdk/admin";
-import bcrypt from "bcrypt";
+import { Buffer } from "buffer";
+
 import { cookies } from "next/headers";
+import { UserInfo } from "./types";
 let mAdmin = new Magic(process.env.MAGIC_SECRET_KEY);
 
 export const setSessionToken = async (didToken: string) => {
@@ -13,15 +15,37 @@ export const setSessionToken = async (didToken: string) => {
     const metadata = await mAdmin.users.getMetadataByToken(didToken);
     if (!metadata.issuer) return { error: "No metadata found" };
 
-    const hashdId = await bcrypt.hash(metadata.issuer, 10);
-    cookies().set("token", hashdId);
+    const encodedId = Buffer.from(metadata.issuer).toString("base64");
+    cookies().set("token", encodedId);
 
-    return { hashdId };
+    return {
+      token: encodedId,
+      email: metadata.email,
+      issuer: metadata.issuer,
+      provider: metadata.oauthProvider || "magic",
+    } as UserInfo;
   } catch (error) {
     return { error: "Invalid DID token" };
   }
 };
 
-export const deleteCookie = () => {
+export const removeSessionToken = () => {
   cookies().delete("token");
+};
+
+export const checkSessionToken = async (
+  encodedId: string,
+  issuerId: string
+) => {
+  try {
+    if (!encodedId || !issuerId) return { error: "No token provided" };
+
+    const decodedId = Buffer.from(encodedId, "base64").toString();
+    const isMatch = decodedId === issuerId;
+    if (!isMatch) return { error: "Don't match" };
+
+    return { isMatch };
+  } catch (error) {
+    return { error: "Something went wrong" };
+  }
 };
