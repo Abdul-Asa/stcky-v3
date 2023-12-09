@@ -13,11 +13,14 @@ import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { userAtom } from "./wrappers/jotai-provider";
 import useRenderCount from "@/lib/hooks/use-render-count";
+import Loader from "./layout/loader";
 
 export default function SpaceComp({
   children,
+  alertMessage,
 }: {
   children?: React.ReactNode;
+  alertMessage?: boolean;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -26,31 +29,40 @@ export default function SpaceComp({
   const render = useRenderCount();
 
   useEffect(() => {
-    if (!magic) return console.log("Magic not initialized");
-    magic.user.isLoggedIn().then((isLoggedIn) => {
-      if (!isLoggedIn) {
-        console.log("This should not happen");
-        removeSessionToken();
-        router.push("/sign-in");
+    // Check if roomId is valid
+    if (alertMessage) {
+      const userConfirmed = window.confirm("Invalid roomId");
+      if (userConfirmed) {
+        router.replace("/space");
+      } else {
+        router.push("/");
       }
-    });
+    }
 
-    magic.user
-      .getIdToken()
-      .then((token) => {
-        setSessionToken(token).then((res) => {
-          if ("error" in res) showToast({ message: res.error, type: "error" });
-          else updateOnSignIn(res);
-          setLoading(false);
-        });
+    // Check if user is logged in
+    if (!magic) return console.log("Magic not initialized");
+    Promise.all([magic.user.isLoggedIn(), magic.user.getIdToken()])
+      .then(([isLoggedIn, token]) => {
+        if (!isLoggedIn) {
+          console.log("This should not happen");
+          removeSessionToken();
+          router.push("/sign-in");
+        } else {
+          setSessionToken(token).then((res) => {
+            if ("error" in res)
+              showToast({ message: res.error, type: "error" });
+            else updateOnSignIn(res);
+            setLoading(false);
+          });
+        }
       })
       .catch(handleError);
-  }, [router, updateOnSignIn]);
+  }, [alertMessage, router, updateOnSignIn]);
 
   return (
     <div className="flex items-center justify-center min-h-screen ">
       {loading ? (
-        <div>Loading...</div>
+        <Loader />
       ) : (
         <div className="max-w-sm p-6 space-y-6 border rounded-lg shadow-lg dark:border-gray-700">
           <h1 className="text-3xl font-bold text-center">Space:{render}</h1>
@@ -73,7 +85,7 @@ export default function SpaceComp({
             className="w-full "
             variant="outline"
             onClick={() =>
-              checkSessionToken(user.token, user.issuer).then((res) => {
+              checkSessionToken(user.token).then((res) => {
                 console.log(res);
               })
             }

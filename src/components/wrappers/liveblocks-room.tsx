@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import { RoomProvider } from "@/liveblocks.config.ts";
 import { ClientSideSuspense } from "@liveblocks/react";
+import Loader from "../layout/loader";
 
 export function Room({
   children,
@@ -13,7 +14,7 @@ export function Room({
 }) {
   return (
     <RoomProvider id={roomId} initialPresence={{ userName: roomId }}>
-      <ClientSideSuspense fallback={<div>Loading…</div>}>
+      <ClientSideSuspense fallback={<Loader />}>
         {() => children}
       </ClientSideSuspense>
     </RoomProvider>

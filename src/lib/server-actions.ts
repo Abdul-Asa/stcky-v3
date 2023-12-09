@@ -33,18 +33,21 @@ export const removeSessionToken = () => {
   cookies().delete("token");
 };
 
-export const checkSessionToken = async (
-  encodedId: string,
-  issuerId: string
-) => {
+export const checkSessionToken = async (encodedId: string) => {
   try {
-    if (!encodedId || !issuerId) return { error: "No token provided" };
+    if (!encodedId) return { error: "No token provided" };
 
     const decodedId = Buffer.from(encodedId, "base64").toString();
-    const isMatch = decodedId === issuerId;
-    if (!isMatch) return { error: "Don't match" };
+    const metadata = await mAdmin.users.getMetadataByIssuer(decodedId);
 
-    return { isMatch };
+    if (!metadata.issuer) return { error: "No metadata found" };
+
+    return {
+      token: encodedId,
+      email: metadata.email,
+      issuer: metadata.issuer,
+      provider: metadata.oauthProvider || "magic",
+    } as UserInfo;
   } catch (error) {
     return { error: "Something went wrong" };
   }
